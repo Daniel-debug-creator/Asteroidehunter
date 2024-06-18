@@ -107,7 +107,7 @@ def mutacao(cromossomo):
         angulo += random.uniform(-math.pi/18, math.pi/18)
         velocidade += random.uniform(-50, 50)
         angulo = max(0, min(angulo, math.pi/2))
-        velocidade = max(10, min(velocidade, 3000))
+        velocidade = max(10, min(velocidade, 300))
     return (angulo, velocidade)
 
 def selecao(populacao, posicao_inicial_asteroide, velocidade_asteroide):
@@ -131,6 +131,41 @@ def selecao(populacao, posicao_inicial_asteroide, velocidade_asteroide):
     populacao.sort(key=lambda crom: fitness(crom, posicao_inicial_asteroide, velocidade_asteroide), reverse=True)
     selecionados = populacao[:tamanho_populacao//2]
     return selecionados + random.choices(selecionados, k=tamanho_populacao//2)
+
+def algoritmo_genetico():
+    """
+    Executa o algoritmo genético para encontrar a melhor solução.
+
+    Returns
+    -------
+    tuple
+        Melhor cromossomo, posição inicial do asteroide, velocidade do asteroide.
+    """
+    posicao_inicial_asteroide = [random.uniform(500, 2000), random.uniform(500, 2000)]
+    velocidade_asteroide = [random.uniform(-5, 5), random.uniform(-5, 5)]
+    populacao = [criar_cromossomo() for _ in range(tamanho_populacao)]
+    melhor_fitness = float('-inf')
+    melhor_cromossomo = None
+
+    for geracao in range(geracoes):
+        populacao = selecao(populacao, posicao_inicial_asteroide, velocidade_asteroide)
+        proxima_geracao = []
+        for i in range(0, len(populacao), 2):
+            pai1, pai2 = populacao[i], populacao[i+1]
+            filho1 = cruzamento(pai1, pai2)
+            proxima_geracao.extend([mutacao(filho1)])
+            
+        populacao = proxima_geracao
+        melhor_cromossomo_atual = max(populacao, key=lambda crom: fitness(crom, posicao_inicial_asteroide, velocidade_asteroide))
+        melhor_fitness_atual = fitness(melhor_cromossomo_atual, posicao_inicial_asteroide, velocidade_asteroide)
+
+        if melhor_fitness_atual > melhor_fitness:
+            melhor_fitness = melhor_fitness_atual
+            melhor_cromossomo = melhor_cromossomo_atual
+        
+        print(f"Geração {geracao}: Melhor Fitness = {melhor_fitness}")
+
+    return melhor_cromossomo, posicao_inicial_asteroide, velocidade_asteroide
 
 def criar_gif(cromossomo, posicao_inicial_asteroide, velocidade_asteroide, filename="simulacao.gif"):
     """
@@ -197,42 +232,7 @@ def criar_gif(cromossomo, posicao_inicial_asteroide, velocidade_asteroide, filen
     
     imageio.mimsave(filename, frames, duration=0.1)
     print(f"GIF salvo como {filename}")
-
-def algoritmo_genetico():
-    """
-    Executa o algoritmo genético para encontrar a melhor solução.
-
-    Returns
-    -------
-    tuple
-        Melhor cromossomo, posição inicial do asteroide, velocidade do asteroide.
-    """
-    posicao_inicial_asteroide = [random.uniform(500, 2000), random.uniform(500, 2000)]
-    velocidade_asteroide = [random.uniform(-5, 5), random.uniform(-5, 5)]
-    populacao = [criar_cromossomo() for _ in range(tamanho_populacao)]
-    melhor_fitness = float('-inf')
-    melhor_cromossomo = None
-
-    for geracao in range(geracoes):
-        populacao = selecao(populacao, posicao_inicial_asteroide, velocidade_asteroide)
-        proxima_geracao = []
-        for i in range(0, len(populacao), 2):
-            pai1, pai2 = populacao[i], populacao[i+1]
-            filho1 = cruzamento(pai1, pai2)
-            proxima_geracao.extend([mutacao(filho1)])
-            
-        populacao = proxima_geracao
-        melhor_cromossomo_atual = max(populacao, key=lambda crom: fitness(crom, posicao_inicial_asteroide, velocidade_asteroide))
-        melhor_fitness_atual = fitness(melhor_cromossomo_atual, posicao_inicial_asteroide, velocidade_asteroide)
-
-        if melhor_fitness_atual > melhor_fitness:
-            melhor_fitness = melhor_fitness_atual
-            melhor_cromossomo = melhor_cromossomo_atual
-        
-        print(f"Geração {geracao}: Melhor Fitness = {melhor_fitness}")
-
-    return melhor_cromossomo, posicao_inicial_asteroide, velocidade_asteroide
-
+    
 melhor_solucao, posicao_inicial_asteroide, velocidade_asteroide = algoritmo_genetico()
 print("Melhor solução:", melhor_solucao)
 criar_gif(melhor_solucao, posicao_inicial_asteroide, velocidade_asteroide)
