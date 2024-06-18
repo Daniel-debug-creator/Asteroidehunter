@@ -141,8 +141,8 @@ def algoritmo_genetico():
     tuple
         Melhor cromossomo, posição inicial do asteroide, velocidade do asteroide.
     """
-    posicao_inicial_asteroide = [random.uniform(500, 2000), random.uniform(500, 2000)]
-    velocidade_asteroide = [random.uniform(-5, 5), random.uniform(-5, 5)]
+    posicao_inicial_asteroide = [random.uniform(500, 2000), random.uniform(1000, 2000)]
+    velocidade_asteroide = [random.uniform(-50, 50), random.uniform(-50, 50)]
     populacao = [criar_cromossomo() for _ in range(tamanho_populacao)]
     melhor_fitness = float('-inf')
     melhor_cromossomo = None
@@ -198,7 +198,7 @@ def criar_gif(cromossomo, posicao_inicial_asteroide, velocidade_asteroide, filen
         x += math.cos(angulo) * velocidade * passo_tempo
         y += (math.sin(angulo) * velocidade + velocidade_y) * passo_tempo
         ast_x += velocidade_asteroide[0] * passo_tempo
-        ast_y += velocidade_asteroide[1] * passo_tempo
+        ast_y += velocidade_asteroide[1]* passo_tempo 
         
         distancia = math.sqrt((x - ast_x)**2 + (y - ast_y)**2)
         if distancia < DISTANCIA_COLISAO:
