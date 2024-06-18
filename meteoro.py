@@ -12,7 +12,7 @@ missil_inicio = [0, 0]
 tamanho_populacao = 100
 geracoes = 1000
 taxa_mutacao = 0.3
-passo_tempo = 1
+passo_tempo = 0.1
 
 def criar_cromossomo():
     """
@@ -223,7 +223,7 @@ def criar_gif(cromossomo, posicao_inicial_asteroide, velocidade_asteroide, filen
         ax.plot([pos[0] for pos in posicoes_missil[:i+1]], [pos[1] for pos in posicoes_missil[:i+1]], 'r-', label='Missil')
         ax.plot(posicoes_asteroide[i][0], posicoes_asteroide[i][1], 'bo', label='Asteroide')
         ax.legend()
-        ax.set_xlim(0, 5000)
+        ax.set_xlim(-5000, 5000)
         ax.set_ylim(0, 5000)
         ax.set_xlabel('Posição X')
         ax.set_ylabel('Posição Y')
