@@ -1,6 +1,6 @@
 # trabalho_gen-tica
 
-# Algoritmo Genético para Interceptação de Asteroides
+#  Asteroides Hunter
 
 Este projeto implementa um algoritmo genético para encontrar a melhor solução para interceptar um asteroide usando um míssil. O objetivo é calcular o ângulo e a velocidade ideais do míssil para que ele colida com o asteroide em movimento.
 
