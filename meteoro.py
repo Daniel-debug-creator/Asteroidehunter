@@ -141,7 +141,7 @@ def algoritmo_genetico():
     tuple
         Melhor cromossomo, posição inicial do asteroide, velocidade do asteroide.
     """
-    posicao_inicial_asteroide = [random.uniform(500, 2000), random.uniform(1000, 2000)]
+    posicao_inicial_asteroide = [random.uniform(500, 2000), random.uniform(1000, 3000)]
     velocidade_asteroide = [random.uniform(-50, 50), random.uniform(-50, 50)]
     populacao = [criar_cromossomo() for _ in range(tamanho_populacao)]
     melhor_fitness = float('-inf')
