@@ -86,7 +86,6 @@ def cruzamento(pai1, pai2):
     """
     if random.random() < 0.5:
         angulo = pai1[0]
-
     else:
         angulo = pai2[0]
     if random.random() < 0.5:
@@ -149,7 +148,7 @@ def algoritmo_genetico():
         Melhor cromossomo, posição inicial do asteroide, velocidade do asteroide.
     """
     posicao_inicial_asteroide = [random.uniform(500, 2000), random.uniform(1000, 3000)]
-    velocidade_asteroide = [random.uniform(-50, 50), random.uniform(-50, 50)]
+    velocidade_asteroide = [random.uniform(-100, 100), random.uniform(-100, 100)]
     populacao = [criar_cromossomo() for _ in range(tamanho_populacao)]
     melhor_fitness = float('-inf')
     melhor_cromossomo = None
@@ -222,7 +221,7 @@ def criar_gif(cromossomo, posicao_inicial_asteroide, velocidade_asteroide, filen
         fig, ax = plt.subplots()
         ax.clear()
         ax.plot([pos[0] for pos in posicoes_missil[:i+1]], [pos[1] for pos in posicoes_missil[:i+1]], 'r-', label='Missil')
-        ax.plot([pos[0] for pos in posicoes_asteroide[:i+1]], [pos[1] for pos in posicoes_asteroide[:i+1]], 'bo', label='Asteroide')
+        ax.plot(posicoes_asteroide[i][0], posicoes_asteroide[i][1], 'bo', label='Asteroide')
         ax.legend()
         ax.set_xlim(0, 5000)
         ax.set_ylim(0, 5000)
