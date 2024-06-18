@@ -84,8 +84,15 @@ def cruzamento(pai1, pai2):
     tuple
         Novo cromossomo gerado pelo cruzamento.
     """
-    angulo = (pai1[0] + pai2[0]) / 2
-    velocidade = (pai1[1] + pai2[1]) / 2
+    if random.random() < 0.5:
+        angulo = pai1[0]
+
+    else:
+        angulo = pai2[0]
+    if random.random() < 0.5:
+        velocidade = pai1[1]
+    else:
+        velocidade = pai2[1]   
     return (angulo, velocidade)
 
 def mutacao(cromossomo):
