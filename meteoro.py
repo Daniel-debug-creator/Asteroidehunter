@@ -14,7 +14,6 @@ geracoes = 1000
 taxa_mutacao = 0.3
 passo_tempo = 1
 
-
 def criar_cromossomo():
     """
     Cria um cromossomo com ângulo e velocidade inicial.
@@ -24,10 +23,9 @@ def criar_cromossomo():
     tuple
         Um cromossomo representado por (ângulo, velocidade).
     """
-    return (random.uniform(math.pi / 8, math.pi / 2), random.uniform(100, 3000))
+    return (random.uniform(math.pi/8, math.pi/2), random.uniform(100, 3000))
 
-
-def aptidao(cromossomo, posicao_inicial_asteroide, velocidade_asteroide):
+def fitness(cromossomo, posicao_inicial_asteroide, velocidade_asteroide):
     """
     Calcula a aptidão do cromossomo com base na distância e tempo.
 
@@ -50,7 +48,7 @@ def aptidao(cromossomo, posicao_inicial_asteroide, velocidade_asteroide):
     ast_x, ast_y = posicao_inicial_asteroide
     velocidade_y = 0
     tempo_decorrido = 0
-
+    
     while y >= 0:
         velocidade_y -= GRAVIDADE * passo_tempo
         x += math.cos(angulo) * velocidade * passo_tempo
@@ -58,18 +56,17 @@ def aptidao(cromossomo, posicao_inicial_asteroide, velocidade_asteroide):
         ast_x += velocidade_asteroide[0] * passo_tempo
         ast_y += velocidade_asteroide[1] * passo_tempo
         tempo_decorrido += passo_tempo
-
-        distancia = math.sqrt((x - ast_x) ** 2 + (y - ast_y) ** 2)
+        
+        distancia = math.sqrt((x - ast_x)**2 + (y - ast_y)**2)
         if distancia < DISTANCIA_COLISAO:
             return 1000 / (tempo_decorrido + 1)
-
+        
         if y < 0:
             y = 0
             break
-
-    distancia = math.sqrt((x - ast_x) ** 2 + (y - ast_y) ** 2)
+    
+    distancia = math.sqrt((x - ast_x)**2 + (y - ast_y)**2)
     return 1 / (distancia + 1 + tempo_decorrido)
-
 
 def cruzamento(pai1, pai2):
     """
@@ -91,7 +88,6 @@ def cruzamento(pai1, pai2):
     velocidade = (pai1[1] + pai2[1]) / 2
     return (angulo, velocidade)
 
-
 def mutacao(cromossomo):
     """
     Realiza a mutação de um cromossomo.
@@ -108,12 +104,11 @@ def mutacao(cromossomo):
     """
     angulo, velocidade = cromossomo
     if random.random() < taxa_mutacao:
-        angulo += random.uniform(-math.pi / 18, math.pi / 18)
+        angulo += random.uniform(-math.pi/18, math.pi/18)
         velocidade += random.uniform(-50, 50)
-        angulo = max(0, min(angulo, math.pi / 2))
-        velocidade = max(10, min(velocidade, 300))
+        angulo = max(0, min(angulo, math.pi/2))
+        velocidade = max(10, min(velocidade, 3000))
     return (angulo, velocidade)
-
 
 def selecao(populacao, posicao_inicial_asteroide, velocidade_asteroide):
     """
@@ -133,10 +128,9 @@ def selecao(populacao, posicao_inicial_asteroide, velocidade_asteroide):
     list
         Lista de cromossomos selecionados.
     """
-    populacao.sort(key=lambda crom: aptidao(crom, posicao_inicial_asteroide, velocidade_asteroide), reverse=True)
-    selecionados = populacao[:tamanho_populacao // 2]
-    return selecionados + random.choices(selecionados, k=tamanho_populacao // 2)
-
+    populacao.sort(key=lambda crom: fitness(crom, posicao_inicial_asteroide, velocidade_asteroide), reverse=True)
+    selecionados = populacao[:tamanho_populacao//2]
+    return selecionados + random.choices(selecionados, k=tamanho_populacao//2)
 
 def criar_gif(cromossomo, posicao_inicial_asteroide, velocidade_asteroide, filename="simulacao.gif"):
     """
@@ -163,33 +157,30 @@ def criar_gif(cromossomo, posicao_inicial_asteroide, velocidade_asteroide, filen
     velocidade_y = 0
     posicoes_missil = [(x, y)]
     posicoes_asteroide = [(ast_x, ast_y)]
-
+    
     while y >= 0:
         velocidade_y -= GRAVIDADE * passo_tempo
         x += math.cos(angulo) * velocidade * passo_tempo
         y += (math.sin(angulo) * velocidade + velocidade_y) * passo_tempo
         ast_x += velocidade_asteroide[0] * passo_tempo
         ast_y += velocidade_asteroide[1] * passo_tempo
-
-        distancia = math.sqrt((x - ast_x) ** 2 + (y - ast_y) ** 2)
+        
+        distancia = math.sqrt((x - ast_x)**2 + (y - ast_y)**2)
         if distancia < DISTANCIA_COLISAO:
             break
-
+        
         if y < 0:
             y = 0
             break
         posicoes_missil.append((x, y))
         posicoes_asteroide.append((ast_x, ast_y))
-
+    
     frames = []
     for i in range(len(posicoes_missil)):
         fig, ax = plt.subplots()
         ax.clear()
-        ax.plot([pos[0] for pos in posicoes_missil[:i + 1]], [pos[1] for pos in
-        posicoes_missil[:i + 1]], 'r-', label = 'Missil')
-        ax.plot([pos[0] for pos in
-        posicoes_asteroide[:i + 1]], [pos[1] for pos in
-        posicoes_asteroide[:i + 1]], 'bo', label = 'Asteroide')
+        ax.plot([pos[0] for pos in posicoes_missil[:i+1]], [pos[1] for pos in posicoes_missil[:i+1]], 'r-', label='Missil')
+        ax.plot([pos[0] for pos in posicoes_asteroide[:i+1]], [pos[1] for pos in posicoes_asteroide[:i+1]], 'bo', label='Asteroide')
         ax.legend()
         ax.set_xlim(0, 5000)
         ax.set_ylim(0, 5000)
@@ -197,16 +188,15 @@ def criar_gif(cromossomo, posicao_inicial_asteroide, velocidade_asteroide, filen
         ax.set_ylabel('Posição Y')
         ax.set_title('Missil vs Asteroide')
         plt.grid(True)
-
+        
         frame_filename = f"frame_{i}.png"
         plt.savefig(frame_filename)
         plt.close()
         frames.append(imageio.imread(frame_filename))
         os.remove(frame_filename)
-
+    
     imageio.mimsave(filename, frames, duration=0.1)
     print(f"GIF salvo como {filename}")
-
 
 def algoritmo_genetico():
     """
@@ -217,33 +207,31 @@ def algoritmo_genetico():
     tuple
         Melhor cromossomo, posição inicial do asteroide, velocidade do asteroide.
     """
-    posicao_inicial_asteroide = [random.uniform(500, 1000), random.uniform(500, 1000)]
+    posicao_inicial_asteroide = [random.uniform(500, 2000), random.uniform(500, 2000)]
     velocidade_asteroide = [random.uniform(-5, 5), random.uniform(-5, 5)]
     populacao = [criar_cromossomo() for _ in range(tamanho_populacao)]
-    melhor_aptidao = float('-inf')
+    melhor_fitness = float('-inf')
     melhor_cromossomo = None
 
     for geracao in range(geracoes):
         populacao = selecao(populacao, posicao_inicial_asteroide, velocidade_asteroide)
         proxima_geracao = []
         for i in range(0, len(populacao), 2):
-            pai1, pai2 = populacao[i], populacao[i + 1]
+            pai1, pai2 = populacao[i], populacao[i+1]
             filho1 = cruzamento(pai1, pai2)
-            filho2 = cruzamento(pai2, pai1)
-            proxima_geracao.extend([mutacao(filho1), mutacao(filho2)])
+            proxima_geracao.extend([mutacao(filho1)])
+            
         populacao = proxima_geracao
-        melhor_cromossomo_atual = max(populacao,
-                                      key=lambda crom: aptidao(crom, posicao_inicial_asteroide, velocidade_asteroide))
-        melhor_aptidao_atual = aptidao(melhor_cromossomo_atual, posicao_inicial_asteroide, velocidade_asteroide)
+        melhor_cromossomo_atual = max(populacao, key=lambda crom: fitness(crom, posicao_inicial_asteroide, velocidade_asteroide))
+        melhor_fitness_atual = fitness(melhor_cromossomo_atual, posicao_inicial_asteroide, velocidade_asteroide)
 
-        if melhor_aptidao_atual > melhor_aptidao:
-            melhor_aptidao = melhor_aptidao_atual
+        if melhor_fitness_atual > melhor_fitness:
+            melhor_fitness = melhor_fitness_atual
             melhor_cromossomo = melhor_cromossomo_atual
-
-        print(f"Geração {geracao}: Melhor Aptidão = {melhor_aptidao}")
+        
+        print(f"Geração {geracao}: Melhor Fitness = {melhor_fitness}")
 
     return melhor_cromossomo, posicao_inicial_asteroide, velocidade_asteroide
-
 
 melhor_solucao, posicao_inicial_asteroide, velocidade_asteroide = algoritmo_genetico()
 print("Melhor solução:", melhor_solucao)
